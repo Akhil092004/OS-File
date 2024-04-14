@@ -5,62 +5,62 @@
 using namespace std;
 
 // Function to find page faults using FIFO
-int pageFaults(int pages[], int n, int capacity) {
+int pageFaults(int pageReferences[], int numReferences, int capacity) {
     // To represent the set of current pages, using unordered_set for quick lookups
-    unordered_set<int> s;
+    unordered_set<int> pageSet;
 
     // To store the pages in FIFO manner
-    queue<int> indexes;
+    queue<int> pageQueue;
 
     // Start from the initial page
-    int page_faults = 0;
-    for (int i = 0; i < n; i++) {
+    int pageFaultCount = 0;
+    for (int i = 0; i < numReferences; i++) {
         // Check if the set can hold more pages
-        if (s.size() < capacity) {
+        if (pageSet.size() < capacity) {
             // Insert it into the set if not already present, indicating a page fault
-            if (s.find(pages[i]) == s.end()) {
+            if (pageSet.find(pageReferences[i]) == pageSet.end()) {
                 // Insert the current page into the set
-                s.insert(pages[i]);
+                pageSet.insert(pageReferences[i]);
 
-                // Increment page fault
-                page_faults++;
+                // Increment page fault count
+                pageFaultCount++;
 
                 // Push the current page into the queue
-                indexes.push(pages[i]);
+                pageQueue.push(pageReferences[i]);
             }
         } else {
             // If the set is full, perform FIFO
-            if (s.find(pages[i]) == s.end()) {
+            if (pageSet.find(pageReferences[i]) == pageSet.end()) {
                 // Get the oldest page from the queue
-                int val = indexes.front();
+                int oldestPage = pageQueue.front();
 
                 // Pop the oldest page from the queue
-                indexes.pop();
+                pageQueue.pop();
 
                 // Remove the oldest page from the set
-                s.erase(val);
+                pageSet.erase(oldestPage);
 
                 // Insert the current page into the set
-                s.insert(pages[i]);
+                pageSet.insert(pageReferences[i]);
 
                 // Push the current page into the queue
-                indexes.push(pages[i]);
+                pageQueue.push(pageReferences[i]);
 
-                // Increment page faults
-                page_faults++;
+                // Increment page fault count
+                pageFaultCount++;
             }
         }
     }
 
-    return page_faults;
+    return pageFaultCount;
 }
 
 // Driver code
 int main() {
-    int pages[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2};
-    int n = sizeof(pages) / sizeof(pages[0]);
+    int pageReferences[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2};
+    int numReferences = sizeof(pageReferences) / sizeof(pageReferences[0]);
     int capacity = 4;
-    cout << "Number of page faults using FIFO: " << pageFaults(pages, n, capacity) << endl;
+    cout << "Number of page faults using FIFO: " << pageFaults(pageReferences, numReferences, capacity) << endl;
     return 0;
 }
- 
+
